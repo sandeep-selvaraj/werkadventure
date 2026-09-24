@@ -1,0 +1,21 @@
+name: Office — First floor
+floor: carpet
+start: [11, 4]
+layout: |
+  ##WWWW####WWWW####WWWW##
+  #,,,,,,,,,,,,,,,,,,,,,,#
+  #,dd,dd,dd,,,,dd,dd,dd,#
+  #,cc,cc,cc,,,,cc,cc,cc,#
+  #,,,,,,,,,,,,,,,,,,,,,,#
+  #,dd,dd,dd,,,,dd,dd,dd,#
+  #,cc,cc,cc,,,,cc,cc,cc,#
+  #p,,,,,,,,,,,,,,,,,,,,p#
+  #####DD#######wwww######
+  #____________..........#
+  #___SS_______...TTTT...#
+  #___SS_______..cTTTTc..#
+  ########################
+areas:
+  - { name: stairs-down, at: [4, 10, 2, 2], exit: floor-0.tmj#stairs-arrival }
+  - { name: stairs-arrival, at: [6, 10, 1, 2] }
+  - { name: Focus room, at: [13, 9, 10, 3], meeting: focus-room }

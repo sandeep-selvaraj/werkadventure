@@ -1,0 +1,19 @@
+# DOMAIN can be a real domain (automatic Let's Encrypt), or a LAN IP / .local name
+# (Caddy then uses its own local CA — see README "LAN without a domain").
+{$DOMAIN} {
+	encode zstd gzip
+
+	# Matrix client-server API (chat)
+	handle /_matrix/* {
+		reverse_proxy tuwunel:6167
+	}
+
+	# LiveKit signalling for meeting rooms (LiveKit runs on the host network)
+	handle_path /livekit/* {
+		reverse_proxy host.docker.internal:7880
+	}
+
+	handle {
+		reverse_proxy server:8080
+	}
+}

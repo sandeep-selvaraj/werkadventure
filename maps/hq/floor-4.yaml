@@ -1,0 +1,52 @@
+# Traced from the 4th-floor plan screenshot (1 tile ≈ 24px of the drawing).
+name: 4th Floor
+floor: wood
+layout: |2  # "2": rows may start with spaces (outside the building)
+                           #############
+                           #p...#......#
+                           #....#...cc.#
+                           #....#..TTTT#
+                           #....#.cTTTT#
+                           #....#...cc.####
+                           #....#.........#
+                           #..............#
+                           #....###########
+                           #....#....dd...#
+                       #####....#....c....#
+                       #,,,,,...#d........#
+                       #,,,,,...#dc.......#
+          ##############,,,,,...#.........#
+          #.............,,,,,...#.........#
+          #..........................c....#
+          #@.........................dd...#
+  #########.....................#;;;;;;;;;#
+  #.............................#;;;;;;;;;#
+  #ccc............:::::::::######;;;;;;;;p#
+  #TTT..........:d::d::::d:#;d;;;;;;;dd####
+  #TTT........:::c::c::::c:#;c;;;;;;;c;#
+  #ccc......:::::::::::::::#;;;;;;;;;dd#
+  #.......:::::::::::::::::#;;;;;;;;;c;#
+  #p....:c::c::::c::c::::c:#;c;;c;;;;;;#
+  #####::d::d::::d::d::::d:#;d;;d;;#####
+      #::::::::::::::::::::#;;;;;;;#
+      ##############################
+areas:
+  # "Meeting" — max. capacity 2
+  - { name: Meeting room, at: [31, 1, 6, 5], meeting: meeting-4f }
+  # blue "Teams:" box — used as a small video-call spot
+  - { name: Teams, at: [22, 11, 5, 4], meeting: teams-4f }
+  # max. capacity 3
+  - { name: Architecture, at: [31, 9, 9, 8] }
+  # green zone — max. capacity 5 (EM desk)
+  - { name: Green desks, at: [31, 17, 9, 3] }
+  - { name: Green desks, at: [26, 20, 11, 5] }
+  - { name: Green desks, at: [26, 25, 7, 2] }
+  # pink zone — max. capacity 8
+  - { name: Pink desks, at: [16, 19, 9, 1] }
+  - { name: Pink desks, at: [14, 20, 11, 1] }
+  - { name: Pink desks, at: [12, 21, 13, 1] }
+  - { name: Pink desks, at: [10, 22, 15, 1] }
+  - { name: Pink desks, at: [8, 23, 17, 1] }
+  - { name: Pink desks, at: [6, 24, 19, 1] }
+  - { name: Pink desks, at: [5, 25, 20, 2] }
+  - { name: Shared desks, at: [1, 19, 3, 4] }

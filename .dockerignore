@@ -1,0 +1,8 @@
+**/node_modules
+**/dist
+data
+.env
+deploy/.env
+e2e
+maps/**/preview
+.git

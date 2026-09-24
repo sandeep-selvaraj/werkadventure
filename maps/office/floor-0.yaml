@@ -1,0 +1,23 @@
+name: Office — Ground floor
+floor: wood
+layout: |
+  ##WWWW######WWWW#####wwww#####
+  #..........#.........,,,,,,,,#
+  #.dd..dd...#.........,,TTTT,,#
+  #.cc..cc...#..s.s....,cTTTTc,#
+  #..........#.........,cTTTTc,#
+  #.dd..dd...#..mkk....,,TTTT,,#
+  #.cc..cc...D.........,,,,,,,,#
+  #..........#.........###DD####
+  #p........p#...@.............#
+  ######DD####..............p..#
+  #______________.......bbbb...#
+  #______________..............#
+  #___SS_________.....;;;;;;...#
+  #___SS_________.....;;s;s;...#
+  ##############################
+areas:
+  - { name: Meeting room, at: [21, 1, 8, 6], meeting: meeting-room, floor: carpet }
+  - { name: Lounge, at: [20, 12, 6, 2], silent: true }
+  - { name: stairs-up, at: [4, 12, 2, 2], exit: floor-1.tmj#stairs-down }
+  - { name: stairs-arrival, at: [6, 12, 1, 2] }

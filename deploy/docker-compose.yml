@@ -1,0 +1,105 @@
+# WerkAdventure on a Raspberry Pi 4 (arm64) or any x86 box.
+#   cp .env.example .env   (or run ../setup.sh)
+#   docker compose up -d
+name: werkadventure
+
+x-limits: &limits
+  restart: unless-stopped
+  logging:
+    driver: json-file
+    options: { max-size: "5m", max-file: "2" }
+
+services:
+  caddy:
+    <<: *limits
+    image: caddy:2-alpine
+    ports: ["80:80", "443:443", "443:443/udp"]
+    environment:
+      DOMAIN: ${DOMAIN}
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy_data:/data
+      - caddy_config:/config
+    extra_hosts: ["host.docker.internal:host-gateway"]
+    mem_limit: 64m
+
+  server:
+    <<: *limits
+    image: ${WERK_IMAGE:-ghcr.io/sandeep-selvaraj/werkadventure:latest}
+    build: ..
+    environment:
+      JWT_SECRET: ${JWT_SECRET}
+      MATRIX_PASSWORD_SECRET: ${MATRIX_PASSWORD_SECRET}
+      MATRIX_INTERNAL_URL: http://tuwunel:6167
+      MATRIX_PUBLIC_URL: ""
+      MATRIX_SERVER_NAME: ${DOMAIN}
+      MATRIX_REGISTRATION_TOKEN: ${MATRIX_REGISTRATION_TOKEN}
+      LIVEKIT_URL: /livekit
+      LIVEKIT_API_KEY: werk
+      LIVEKIT_API_SECRET: ${LIVEKIT_SECRET}
+      TURN_SECRET: ${TURN_SECRET}
+      TURN_URLS: turn:${DOMAIN}:3478?transport=udp,turn:${DOMAIN}:3478?transport=tcp
+      START_MAP: ${START_MAP:-/maps/hq/floor-4.tmj}
+      ALLOW_GUESTS: ${ALLOW_GUESTS:-true}
+      ALLOW_SIGNUP: ${ALLOW_SIGNUP:-false}
+    volumes:
+      - werk_data:/data
+      # edit maps on the Pi without rebuilding: files here override the built-in ones
+      - ../maps:/app/maps:ro
+    depends_on: [tuwunel]
+    mem_limit: 256m
+
+  tuwunel:
+    <<: *limits
+    image: ghcr.io/matrix-construct/tuwunel:latest
+    environment:
+      TUWUNEL_SERVER_NAME: ${DOMAIN}
+      TUWUNEL_DATABASE_PATH: /var/lib/tuwunel
+      TUWUNEL_ADDRESS: 0.0.0.0
+      TUWUNEL_PORT: 6167
+      TUWUNEL_ALLOW_REGISTRATION: "true"
+      TUWUNEL_REGISTRATION_TOKEN: ${MATRIX_REGISTRATION_TOKEN}
+      TUWUNEL_ALLOW_FEDERATION: "false"
+      TUWUNEL_MAX_REQUEST_SIZE: 52428800
+      TUWUNEL_NEW_USER_DISPLAYNAME_SUFFIX: ""
+      # keep RocksDB small on a Pi
+      TUWUNEL_DB_CACHE_CAPACITY_MB: 64
+    volumes:
+      - tuwunel_data:/var/lib/tuwunel
+    mem_limit: 384m
+
+  livekit:
+    <<: *limits
+    image: livekit/livekit-server:latest
+    command: ["--config", "/etc/livekit.yaml"]
+    network_mode: host
+    environment:
+      LIVEKIT_KEYS: "werk: ${LIVEKIT_SECRET}"
+    volumes:
+      - ./livekit.yaml:/etc/livekit.yaml:ro
+    mem_limit: 256m
+
+  coturn:
+    <<: *limits
+    image: coturn/coturn:latest
+    network_mode: host
+    command:
+      - -n
+      - --listening-port=3478
+      - --min-port=49160
+      - --max-port=49200
+      - --use-auth-secret
+      - --static-auth-secret=${TURN_SECRET}
+      - --realm=${DOMAIN}
+      - --no-cli
+      - --no-tls
+      - --no-multicast-peers
+      - --denied-peer-ip=0.0.0.0-0.255.255.255
+      - --denied-peer-ip=127.0.0.0-127.255.255.255
+    mem_limit: 64m
+
+volumes:
+  caddy_data:
+  caddy_config:
+  werk_data:
+  tuwunel_data:

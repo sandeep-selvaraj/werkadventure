@@ -1,0 +1,3 @@
+#!/bin/sh
+# admin CLI inside the server container: docker compose exec server werk user add alice --admin
+exec node /app/server/cli.js "$@"
